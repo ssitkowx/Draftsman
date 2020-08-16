@@ -37,15 +37,15 @@ class Display
 
         struct Configuration
         {
+            uint8_t  RectNumbers;
             uint16_t Length;
             uint16_t Width;
             uint16_t MaxLinesPerTransfer;
-            uint8_t  RectsNumber;
         };
 
         const Configuration Config;
 
-        Display (const Configuration v_config) : Config (v_config) {}
+        Display (const Configuration v_config) : Config (v_config) { }
         virtual ~Display () = default;
 
         bool            DrawRect       (const uint16_t v_xPos, const uint16_t v_yPos, const uint16_t v_width, const uint16_t v_length, const EColors eColor         );
