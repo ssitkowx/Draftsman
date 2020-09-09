@@ -10,48 +10,50 @@
 //////////////////////////////// FUNCTIONS ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Display::DrawRect (const uint16_t v_xPos, const uint16_t v_yPos, const uint16_t v_width, const uint16_t v_length, const Display::EColors eColor)
+bool Display::DrawRect (const Rect v_rect, const EColors eColor)
 {
-    if (validateRect (v_xPos, v_yPos, v_width, v_length) == false) { return false; }
+    if (validateRect (v_rect) == false) { return false; }
 
-    const uint16_t rectLen  = Config.Width * Config.MaxLinesPerTransfer;
-    uint16_t rect [rectLen] = { };
-    memset (rect, getColor (eColor), rectLen * sizeof (uint16_t));
-    uint8_t maxRects = calculateRects (v_length);
+    const uint16_t rectLen            = v_rect.Dimension.Width * Config.LinesPerTransfer;
+    uint16_t       rectData [rectLen] = { };
+    memset        (rectData, getColor (eColor), rectLen * sizeof (uint16_t));
+    Rect           rect               = v_rect;
+    rect.Data                         = rectData;
+    uint8_t        maxRects           = calculateRects (rect.Dimension.Height);
 
-    if (maxRects == ONE) { sendLines (v_xPos, v_yPos, v_width, v_length, static_cast <uint16_t *> (rect)); }
+    if (maxRects == ONE) { sendLines (rect); }
     else
     {
-        uint16_t yPos   = v_yPos;
-        uint16_t length = ZERO;
+        uint16_t yPos   = ZERO;
+        uint16_t height = ZERO;
         for (uint8_t rectNum = ONE; rectNum <= maxRects; rectNum++)
         {
-            if (rectNum == maxRects) { length = v_length + v_yPos - yPos; }
-            else
-            {
-                length = Config.MaxLinesPerTransfer;
-                yPos   = yPos + length;
-            }
+            if (rectNum == maxRects) { height = v_rect.Dimension.Height - yPos; }
+            else                     { height = Config.LinesPerTransfer; }
 
-            sendLines (v_xPos, yPos, v_width, length, static_cast <uint16_t *> (rect));
+            rect.Coordinate.Y     = yPos + v_rect.Coordinate.Y;
+            rect.Dimension.Height = height;
+
+            sendLines (rect);
+            yPos = yPos + height;
         }
     }
 
     return true;
 }
 
-bool Display::validateRect (const uint16_t v_xPos, const uint16_t v_yPos, const uint16_t v_width, const uint16_t v_length)
+bool Display::validateRect (const Rect v_rect)
 {
-    return (((v_xPos + v_width)  > Config.Width)  ||
-            ((v_yPos + v_length) > Config.Length)) ? false : true;
+    return (((v_rect.Coordinate.X + v_rect.Dimension.Width)  > Config.Dimension.Width)  ||
+            ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > Config.Dimension.Height)) ? false : true;
 }
 
-uint8_t Display::calculateRects (const uint16_t v_length)
+uint8_t Display::calculateRects (const uint16_t v_height)
 {
-    double  rects    = v_length / Config.MaxLinesPerTransfer;
+    double  rects    = v_height / Config.LinesPerTransfer;
     uint8_t maxRects = static_cast <uint8_t> (rects);
 
-    return ((v_length % Config.MaxLinesPerTransfer) != ZERO) ? ++maxRects : maxRects;
+    return ((v_height % Config.LinesPerTransfer) != ZERO) ? ++maxRects : maxRects;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
