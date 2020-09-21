@@ -2,6 +2,7 @@
 //////////////////////////////// INCLUDES /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <vector>
 #include "Utils.h"
 #include <memory.h>
 #include "Display.h"
@@ -14,12 +15,10 @@ bool Display::DrawRect (const Rect v_rect, const EColors eColor)
 {
     if (validateRect (v_rect) == false) { return false; }
 
-    const uint16_t rectLen            = v_rect.Dimension.Width * Config.LinesPerTransfer;
-    uint16_t       rectData [rectLen] = { };
-    memset        (rectData, getColor (eColor), rectLen * sizeof (uint16_t));
-    Rect           rect               = v_rect;
-    rect.Data                         = rectData;
-    uint8_t        maxRects           = calculateRects (rect.Dimension.Height);
+    std::vector <uint16_t> rectData (v_rect.Dimension.Width * Config.LinesPerTransfer * sizeof (uint16_t), getColor (eColor));
+    Rect rect        = v_rect;
+    rect.Data        = rectData.data ();
+    uint8_t maxRects = calculateRects (rect.Dimension.Height);
 
     if (maxRects == ONE) { sendLines (rect); }
     else
