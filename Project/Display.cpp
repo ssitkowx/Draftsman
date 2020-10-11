@@ -11,12 +11,12 @@
 //////////////////////////////// FUNCTIONS ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Display::DrawRect (const Rect v_rect, const EColors eColor)
+bool Display::DrawRect (const Rectangle & v_rect, const EColors eColor)
 {
     if (validateRect (v_rect) == false) { return false; }
 
     std::vector <uint16_t> rectData (v_rect.Dimension.Width * Config.LinesPerTransfer * sizeof (uint16_t), (getColor (eColor) << EIGHT_BITS) + getColor (eColor));
-    Rect rect        = v_rect;
+    Rectangle rect   = v_rect;
     rect.Data        = rectData.data ();
     uint8_t maxRects = calculateRects (rect.Dimension.Height);
 
@@ -41,7 +41,7 @@ bool Display::DrawRect (const Rect v_rect, const EColors eColor)
     return true;
 }
 
-bool Display::validateRect (const Rect v_rect)
+bool Display::validateRect (const Rectangle & v_rect)
 {
     return (((v_rect.Coordinate.X + v_rect.Dimension.Width)  > Config.Dimension.Width)  ||
             ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > Config.Dimension.Height)) ? false : true;

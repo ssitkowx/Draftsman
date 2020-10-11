@@ -5,6 +5,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <stdint.h>
+#include "Rectangle.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
@@ -35,29 +36,10 @@ class Display
             eNavy
         };
 
-        struct Dimensions
-        {
-            uint16_t Width;
-            uint16_t Height;
-        };
-
         struct Configuration
         {
             uint16_t   LinesPerTransfer;
-            Dimensions Dimension;
-        };
-
-        struct Coordinates
-        {
-            uint16_t X;
-            uint16_t Y;
-        };
-
-        struct Rect
-        {
-            uint16_t *  Data;
-            Coordinates Coordinate;
-            Dimensions  Dimension;
+            Rectangle::Dimensions Dimension;
         };
 
         const Configuration Config;
@@ -65,15 +47,15 @@ class Display
         explicit Display (const Configuration v_config) : Config (v_config) { }
         virtual ~Display () = default;
 
-        bool            DrawRect       (const Rect v_rect, const EColors eColor);
-        virtual bool    DrawBitmap     (const Rect v_rect                      ) = 0;
+        bool            DrawRect       (const Rectangle & v_rect, const EColors eColor);
+        virtual bool    DrawBitmap     (const Rectangle & v_rect                      ) = 0;
 
     protected:
-        virtual void    sendLines      (const Rect v_rect                      ) = 0;
-        virtual uint8_t getColor       (const Display::EColors eColor          ) = 0;
+        virtual void    sendLines      (const Rectangle &v_rect                       ) = 0;
+        virtual uint8_t getColor       (const Display::EColors eColor                 ) = 0;
 
     protected:
-        bool            validateRect   (const Rect v_rect);
+        bool            validateRect   (const Rectangle & v_rect);
         uint8_t         calculateRects (const uint16_t v_height);
 };
 
