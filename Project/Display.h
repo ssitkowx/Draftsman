@@ -56,7 +56,7 @@ class Display
 
     protected:
         bool            validateRect   (const Rectangle & v_rect);
-        uint8_t         calculateRects (const uint16_t v_height);
+        uint8_t         calculateRects (const Rectangle::Dimensions & v_dimensions);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
