@@ -4,8 +4,8 @@
 //////////////////////////////// INCLUDES /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <stdint.h>
-#include "Rectangle.h"
+#include <string>
+#include "Bitmap.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
@@ -36,27 +36,27 @@ class Display
             eNavy
         };
 
-        struct Configuration
+        struct Config_t
         {
-            uint16_t   LinesPerTransfer;
+            uint16_t              LinesPerTransfer;
             Rectangle::Dimensions Dimension;
         };
 
-        const Configuration Config;
-
-        explicit Display (const Configuration v_config) : Config (v_config) { }
+        Display (const Config_t v_config);
         virtual ~Display () = default;
 
-        bool            DrawRect       (const Rectangle & v_rect, const EColors eColor);
-        virtual bool    DrawBitmap     (const Rectangle & v_rect                      ) = 0;
+        virtual bool    DrawText   (const std::string & v_text, Rectangle::Coordinates v_coordinates) { /* todo */ return false; }
+        virtual bool    DrawBitmap (Bitmap & v_bitmap                                               );
 
     protected:
-        virtual void    sendLines      (const Rectangle &v_rect                       ) = 0;
-        virtual uint8_t getColor       (const Display::EColors eColor                 ) = 0;
+        virtual void    sendLines  (const Bitmap & v_rect                     ) = 0;
+        virtual uint8_t getColor   (const Display::EColors v_eColor           ) = 0;
 
-    protected:
-        bool            validateRect   (const Rectangle & v_rect);
-        uint8_t         calculateRects (const Rectangle::Dimensions & v_dimensions);
+        bool            validate   (const Rectangle & v_rect                  );
+        uint8_t         calculate  (const Rectangle::Dimensions & v_dimensions);
+
+    private:
+        const Config_t config;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

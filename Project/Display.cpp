@@ -2,39 +2,37 @@
 //////////////////////////////// INCLUDES /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <vector>
 #include "Utils.h"
-#include <memory.h>
 #include "Display.h"
+#include "Rectangle.h"
 
-#include "LoggerHw.h"
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// FUNCTIONS ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-bool Display::DrawRect (const Rectangle & v_rect, const EColors eColor)
+Display::Display (const Config_t v_config) : config (v_config) {}
+
+bool Display::DrawBitmap (Bitmap & v_bitmap)
 {
-    if (validateRect (v_rect) == false) { return false; }
+    Rectangle rect  = {};
+    rect.Dimension  = v_bitmap.Dimension;
+    rect.Coordinate = v_bitmap.Coordinate;
 
-    std::vector <uint16_t> rectData (v_rect.Dimension.Width * v_rect.Dimension.Height * sizeof (uint16_t), (getColor (eColor) << EIGHT_BITS) + getColor (eColor));
-    Rectangle rect   = v_rect;
-    rect.Data        = rectData.data ();
-
-    uint8_t maxRects = calculateRects (rect.Dimension);
-    if (maxRects == ONE) { sendLines (rect); }
+    uint8_t maxRects = calculate (v_bitmap.Dimension);
+    if (maxRects == ONE) { sendLines (v_bitmap); }
     else
     {
         uint16_t yPos   = ZERO;
         uint16_t height = ZERO;
         for (uint8_t rectNum = ONE; rectNum <= maxRects; rectNum++)
         {
-            if (rectNum == maxRects) { height = v_rect.Dimension.Height - yPos; }
-            else                     { height = Config.Dimension.Width * Config.LinesPerTransfer / rect.Dimension.Width; }
+            if (rectNum == maxRects) { height = v_bitmap.Dimension.Height - yPos; }
+            else                     { height = v_bitmap.Dimension.Width * config.LinesPerTransfer / config.Dimension.Width; }
 
-            rect.Coordinate.Y     = yPos + v_rect.Coordinate.Y;
-            rect.Dimension.Height = height;
+            v_bitmap.Coordinate.Y     = yPos + v_bitmap.Coordinate.Y;
+            v_bitmap.Dimension.Height = height;
 
-            sendLines (rect);
+            sendLines (v_bitmap);
             yPos = yPos + height;
         }
     }
@@ -42,16 +40,16 @@ bool Display::DrawRect (const Rectangle & v_rect, const EColors eColor)
     return true;
 }
 
-bool Display::validateRect (const Rectangle & v_rect)
+bool Display::validate (const Rectangle & v_rect)
 {
-    return (((v_rect.Coordinate.X + v_rect.Dimension.Width)  > Config.Dimension.Width)  ||
-            ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > Config.Dimension.Height)) ? false : true;
+    return (((v_rect.Coordinate.X + v_rect.Dimension.Width)  > config.Dimension.Width)  ||
+            ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > config.Dimension.Height)) ? false : true;
 }
 
-uint8_t Display::calculateRects (const Rectangle::Dimensions & v_dimensions)
+uint8_t Display::calculate (const Rectangle::Dimensions & v_dimensions)
 {
-    double rects         = (v_dimensions.Width * v_dimensions.Height) / (Config.Dimension.Width * Config.LinesPerTransfer);
-    double aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (Config.Dimension.Width * Config.LinesPerTransfer);
+    double rects         = (v_dimensions.Width * v_dimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
+    double aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);
     uint8_t maxRects     = static_cast <uint8_t> (rects);
 
     return (aditionalRect > ZERO) ? ++maxRects : maxRects;
