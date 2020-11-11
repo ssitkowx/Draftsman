@@ -83,10 +83,14 @@ class Display
         void    sendLines  (const Bitmap & v_rect          ) { derivedType.sendLines (v_rect); }
         uint8_t getColor   (const Display::EColors v_eColor) { derivedType.getColor  (v_eColor); }
 
-        bool validate (const Rectangle & v_rect)
+    private:
+        const Config_t config;
+        ~Display () = default;
+
+        virtual bool validate (const Rectangle & v_rect)
         {
-            return (((v_rect.Coordinate.X + v_rect.Dimension.Width) > config.Dimension.Width) ||
-                    ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > config.Dimension.Height)) ? false : true;
+            return (((v_rect.Coordinate.X + v_rect.Dimension.Width) >= config.Dimension.Width) ||
+                    ((v_rect.Coordinate.Y + v_rect.Dimension.Height) >= config.Dimension.Height)) ? false : true;
         }
 
         uint8_t calculate (const Rectangle::Dimensions & v_dimensions)
@@ -96,10 +100,6 @@ class Display
             uint8_t maxRects     = static_cast <uint8_t> (rects);
             return (aditionalRect > ZERO) ? ++maxRects : maxRects;
         }
-
-    private:
-        const Config_t config;
-        ~Display () = default;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
