@@ -81,7 +81,7 @@ class Display
 
     protected:
         void    sendLines  (const Bitmap & v_rect          ) { derivedType.sendLines (v_rect); }
-        uint8_t getColor   (const Display::EColors v_eColor) { derivedType.getColor  (v_eColor); }
+        uint8_t getColor   (const Display::EColors v_eColor) { return derivedType.getColor (v_eColor); }
 
     private:
         const Config_t config;
