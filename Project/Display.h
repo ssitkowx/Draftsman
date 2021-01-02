@@ -46,33 +46,32 @@ class Display
             Rectangle::Dimensions Dimension;
         };
 
-        Display (const Config_t v_config) : config (v_config) { }
+        explicit Display (const Config_t v_config) : config (v_config) { }
 
-        bool DrawText   (const std::string & v_text, Rectangle::Coordinates v_coordinates) { /* todo */ return false; }
+        bool DrawText   (const std::string & v_text, Rectangle::Coordinates v_coordinates) { return derivedType.DrawText (v_text, v_coordinates); }
         bool DrawBitmap (Bitmap & v_bitmap)
         {
-            Rectangle rect = {};
-            rect.Dimension = v_bitmap.Dimension;
-            rect.Coordinate = v_bitmap.Coordinate;
-
+            const Rectangle rect = { v_bitmap.Dimension, v_bitmap.Coordinate };
             if (validate (rect) == false) { return false; }
 
-            uint8_t maxRects = calculate (v_bitmap.Dimension);
+            const uint8_t maxRects = calculate (v_bitmap.Dimension);
             if (maxRects == ONE) { sendLines (v_bitmap); }
             else
             {
-                uint16_t yPos = ZERO;
-                uint16_t height = ZERO;
+                uint16_t height             = ZERO;
+                const uint16_t bitmapHeight = v_bitmap.Dimension.Height;
                 for (uint8_t rectNum = ONE; rectNum <= maxRects; rectNum++)
                 {
-                    if (rectNum == maxRects) { height = v_bitmap.Dimension.Height - yPos; }
-                    else { height = v_bitmap.Dimension.Width * config.LinesPerTransfer / config.Dimension.Width; }
+                    if (rectNum == maxRects) { height = bitmapHeight - (rectNum - ONE) * height; }
+                    else                     { height = config.LinesPerTransfer * config.Dimension.Width / v_bitmap.Dimension.Width; }
 
-                    v_bitmap.Coordinate.Y = yPos + v_bitmap.Coordinate.Y;
-                    v_bitmap.Dimension.Height = height;
+                    auto enableChunkMovement    = [&]() -> bool { return (rectNum == ONE) ? false : true; };
+                    bool isChunkMovementEnabled = enableChunkMovement ();
+                    v_bitmap.Dimension.Height   = height;
+                    v_bitmap.Coordinate.Y       = v_bitmap.Coordinate.Y + isChunkMovementEnabled * height;
+                    v_bitmap.Data               = &v_bitmap.Data [isChunkMovementEnabled * v_bitmap.Dimension.Width * height];
 
                     sendLines (v_bitmap);
-                    yPos = yPos + height;
                 }
             }
 
@@ -89,8 +88,8 @@ class Display
 
         constexpr bool validate (const Rectangle & v_rect)
         {
-            return (((v_rect.Coordinate.X + v_rect.Dimension.Width) >= config.Dimension.Width) ||
-                    ((v_rect.Coordinate.Y + v_rect.Dimension.Height) >= config.Dimension.Height)) ? false : true;
+            return (((v_rect.Coordinate.X + v_rect.Dimension.Width) > config.Dimension.Width) ||
+                    ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > config.Dimension.Height)) ? false : true;
         }
 
         constexpr uint8_t calculate (const Rectangle::Dimensions & v_dimensions)
