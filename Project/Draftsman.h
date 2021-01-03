@@ -14,7 +14,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 template <class DERIVED_TYPE>
-class Display
+class Draftsman
 {
     friend DERIVED_TYPE;
     DERIVED_TYPE & derivedType = static_cast <DERIVED_TYPE &>(*this);
@@ -46,10 +46,10 @@ class Display
             Rectangle::Dimensions Dimension;
         };
 
-        explicit Display (const Config_t v_config) : config (v_config) { }
+        explicit Draftsman  (const Config_t v_config) : config (v_config) { }
 
-        bool DrawText   (const std::string & v_text, Rectangle::Coordinates v_coordinates) { return derivedType.DrawText (v_text, v_coordinates); }
-        bool DrawBitmap (Bitmap & v_bitmap)
+        bool     DrawText   (std::string_view v_text, const Rectangle::Coordinates v_coordinates) { return derivedType.DrawText (v_text, v_coordinates); }
+        bool     DrawBitmap (Bitmap & v_bitmap)
         {
             const Rectangle rect = { v_bitmap.Dimension, v_bitmap.Coordinate };
             if (validate (rect) == false) { return false; }
@@ -79,12 +79,12 @@ class Display
         };
 
     protected:
-        void    sendLines  (const Bitmap & v_rect          ) { derivedType.sendLines (v_rect); }
-        uint8_t getColor   (const Display::EColors v_eColor) { return derivedType.getColor (v_eColor); }
+        void    sendLines  (const Bitmap & v_rect            ) { derivedType.sendLines (v_rect); }
+        uint8_t getColor   (const Draftsman::EColors v_eColor) { return derivedType.getColor (v_eColor); }
 
     private:
         const Config_t config;
-        ~Display () = default;
+        ~Draftsman () = default;
 
         constexpr bool validate (const Rectangle & v_rect)
         {
