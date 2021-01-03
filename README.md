@@ -1,4 +1,4 @@
-# Display
+# Draftsman
 
 # I. Description:
 General class for drawing.
