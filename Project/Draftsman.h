@@ -20,36 +20,15 @@ class Draftsman
     DERIVED_TYPE & derivedType = static_cast <DERIVED_TYPE &>(*this);
 
     public:
-        enum class EColors
-        {
-            eBlack,
-            eWhite,
-            eRed,
-            eLime,
-            eBlue,
-            eYellow,
-            eCyan,
-            eMagneta,
-            eSilver,
-            eGray,
-            eMaroon,
-            eOlive,
-            eGreen,
-            ePurple,
-            eTeal,
-            eNavy
-        };
-
         struct Config_t
         {
             uint16_t              LinesPerTransfer;
             Rectangle::Dimensions Dimension;
         };
 
-        explicit Draftsman  (const Config_t v_config) : config (v_config) { }
-
-        bool     DrawText   (std::string_view v_text, const Rectangle::Coordinates v_coordinates) { return derivedType.DrawText (v_text, v_coordinates); }
-        bool     DrawBitmap (Bitmap & v_bitmap)
+        explicit constexpr Draftsman  (const Config_t v_config) : config (v_config) { }
+        void               DrawText   (std::string_view v_text, const Rectangle::Coordinates v_coordinates) { derivedType.DrawText (v_text, v_coordinates); }
+        bool               DrawBitmap (Bitmap & v_bitmap)
         {
             const Rectangle rect = { v_bitmap.Dimension, v_bitmap.Coordinate };
             if (validate (rect) == false) { return false; }
@@ -79,12 +58,10 @@ class Draftsman
         };
 
     protected:
-        void    sendLines  (const Bitmap & v_rect            ) { derivedType.sendLines (v_rect); }
-        uint8_t getColor   (const Draftsman::EColors v_eColor) { return derivedType.getColor (v_eColor); }
+        void sendLines (const Bitmap & v_rect) { derivedType.sendLines (v_rect); }
 
     private:
         const Config_t config;
-        ~Draftsman () = default;
 
         constexpr bool validate (const Rectangle & v_rect)
         {
@@ -99,6 +76,8 @@ class Draftsman
             uint8_t maxRects     = static_cast <uint8_t> (rects);
             return (aditionalRect > ZERO) ? ++maxRects : maxRects;
         }
+
+        ~Draftsman () = default;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
