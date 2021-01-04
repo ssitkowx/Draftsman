@@ -5,25 +5,25 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Utils.h"
-#include "Display.h"
+#include "Draftsman.h"
 #include "gmock/gmock.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-class DisplayMock final : public Display <DisplayMock>
+class DraftsmanMock final : public Draftsman <DraftsmanMock>
 {
     public:
-        DisplayMock (Display <DisplayMock>::Config_t v_config) : Display <DisplayMock> (v_config) { }
-        ~DisplayMock () = default;
+        DraftsmanMock (Draftsman <DraftsmanMock>::Config_t v_config) : Draftsman <DraftsmanMock> (v_config) { }
+        ~DraftsmanMock () = default;
 
         MOCK_METHOD1 (sendLines, void (const Bitmap & v_rect));
         MOCK_METHOD1 (validate , bool (const Rectangle & v_rect));
 
         bool Validate (const Rectangle & v_rect)
         {
-            return Display <DisplayMock>::validate (v_rect);
+            return Draftsman <DraftsmanMock>::validate (v_rect);
         }
 };
 
