@@ -71,9 +71,9 @@ class Draftsman
 
         constexpr uint8_t calculate (const Rectangle::Dimensions & v_dimensions)
         {
-            double rects         = (v_dimensions.Width * v_dimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
-            double aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);
-            uint8_t maxRects     = static_cast <uint8_t> (rects);
+            double  rects         = (v_dimensions.Width * v_dimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
+            double  aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);
+            uint8_t maxRects      = static_cast <uint8_t> (rects);
             return (aditionalRect > ZERO) ? ++maxRects : maxRects;
         }
 

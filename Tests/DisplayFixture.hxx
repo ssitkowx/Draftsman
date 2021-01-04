@@ -4,23 +4,23 @@
 //////////////////////////////// INCLUDES /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "Display.h"
-#include "DisplayMock.hxx"
+#include "Draftsman.h"
+#include "DraftsmanMock.hxx"
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-class DisplayFixture : public ::testing::Test
+class DraftsmanFixture : public ::testing::Test
 {
     public:
-        static constexpr char * MODULE = (char *)"DisplayFixture";
-        DisplayMock::Config_t   Config = { FIFTEEN, {THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY} };
+        static constexpr char * MODULE = (char *)"DraftsmanFixture";
+        DraftsmanMock::Config_t Config = { FIFTEEN, {THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY} };
         BitmapMock              BitmapMock;
-        DisplayMock             DisplayMock;
+        DraftsmanMock           DraftsmanMock;
 
-        DisplayFixture () : DisplayMock (Config) { }
-        ~DisplayFixture () = default;
+        DraftsmanFixture () : DraftsmanMock (Config) { }
+        ~DraftsmanFixture () = default;
 
         void TestBody () override { }
         void SetUp    () override { }
