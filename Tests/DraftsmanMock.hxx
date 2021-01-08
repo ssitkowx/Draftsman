@@ -4,6 +4,7 @@
 //////////////////////////////// INCLUDES /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+
 #include "Utils.h"
 #include "Draftsman.h"
 #include "gmock/gmock.h"
@@ -18,12 +19,13 @@ class DraftsmanMock final : public Draftsman <DraftsmanMock>
         DraftsmanMock (Draftsman <DraftsmanMock>::Config_t v_config) : Draftsman <DraftsmanMock> (v_config) { }
         ~DraftsmanMock () = default;
 
-        MOCK_METHOD1 (sendLines, void (const Bitmap & v_rect));
-        MOCK_METHOD1 (validate , bool (const Rectangle & v_rect));
+        MOCK_METHOD2       (DrawText , void    (std::string_view v_text, const Rectangle::Coordinates v_coordinates));
+        MOCK_METHOD1       (sendLines, void    (const Bitmap & v_rect));
+        MOCK_CONST_METHOD1 (calculate, uint8_t (const Rectangle::Dimensions & v_dimensions));
 
-        bool Validate (const Rectangle & v_rect)
+        uint8_t Calculate (const Rectangle::Dimensions & v_dimensions) const
         {
-            return Draftsman <DraftsmanMock>::validate (v_rect);
+            return Draftsman <DraftsmanMock>::calculate (v_dimensions);
         }
 };
 

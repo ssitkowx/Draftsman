@@ -26,9 +26,9 @@ class Draftsman
             Rectangle::Dimensions Dimension;
         };
 
-        explicit constexpr Draftsman  (const Config_t v_config) : config (v_config) { }
-        void               DrawText   (std::string_view v_text, const Rectangle::Coordinates v_coordinates) { derivedType.DrawText (v_text, v_coordinates); }
-        bool               DrawBitmap (Bitmap & v_bitmap)
+        explicit Draftsman  (const Config_t v_config) : config (v_config) { }
+        void     DrawText   (std::string_view v_text, const Rectangle::Coordinates v_coordinates) { derivedType.DrawText (v_text, v_coordinates); }
+        bool     DrawBitmap (Bitmap & v_bitmap)
         {
             const Rectangle rect = { v_bitmap.Dimension, v_bitmap.Coordinate };
             if (validate (rect) == false) { return false; }
@@ -63,17 +63,17 @@ class Draftsman
     private:
         const Config_t config;
 
-        constexpr bool validate (const Rectangle & v_rect)
+        bool validate (const Rectangle & v_rect) const
         {
             return (((v_rect.Coordinate.X + v_rect.Dimension.Width) > config.Dimension.Width) ||
                     ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > config.Dimension.Height)) ? false : true;
         }
 
-        constexpr uint8_t calculate (const Rectangle::Dimensions & v_dimensions)
+        uint8_t calculate (const Rectangle::Dimensions & v_dimensions) const
         {
-            double  rects         = (v_dimensions.Width * v_dimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
-            double  aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);
-            uint8_t maxRects      = static_cast <uint8_t> (rects);
+            const double  rects         = (v_dimensions.Width * v_dimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
+            const double  aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);
+            uint8_t maxRects            = static_cast <uint8_t> (rects);
             return (aditionalRect > ZERO) ? ++maxRects : maxRects;
         }
 

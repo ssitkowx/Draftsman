@@ -9,23 +9,10 @@
 #include "DraftsmanFixture.hxx"
 
 ///////////////////////////////////////////////////////////////////////////////
-/////////////////////////// MACROS/DEFINITIONS ////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-MATCHER_P (AreRectsEq, v_rect, "Expects rects match")
-{
-    return (arg.Dimension.Width  == v_rect.Dimension.Width ) &&
-           (arg.Dimension.Height == v_rect.Dimension.Height) &&
-           (arg.Coordinate.X     == v_rect.Coordinate.X    ) &&
-           (arg.Coordinate.Y     == v_rect.Coordinate.Y    );
-}
-
-///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// VARIABLES ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 using ::testing::_;
-using ::testing::Return;
 using ::testing::Invoke;
 using ::testing::AtLeast;
 
@@ -38,22 +25,15 @@ TEST_F (DraftsmanFixture, CheckTheBitmapValidationOutsideTheScreen)
     LOGW (MODULE, "CheckTheBitmapValidationOutsideTheScreen");
 
     LOGI (MODULE, "The bitmap will exceed the width of the screen");
-    EXPECT_CALL (DraftsmanMock, validate (_)).WillOnce (Invoke (&DraftsmanMock, &DraftsmanMock::Validate))
-                                           .WillOnce (Invoke (&DraftsmanMock, &DraftsmanMock::Validate));
-
-    BitmapMock.Id               = ZERO;
-    BitmapMock.Coordinate.X     = ONE;
-    BitmapMock.Coordinate.Y     = ZERO;
-    BitmapMock.Dimension.Width  = THREE_HUNDRED_NINETEEN;
-    BitmapMock.Dimension.Height = TWO_HUNDRED_THIRTY_NINE;
+    BitmapMock.Id         = ZERO;
+    BitmapMock.Coordinate = { ONE                 , ZERO              };    // X, Y
+    BitmapMock.Dimension  = { THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY };    // Width, Height
     ASSERT_FALSE (DraftsmanMock.DrawBitmap (BitmapMock));
 
     LOGI (MODULE, "The bitmap will exceed the height of the screen");
-    BitmapMock.Id               = ZERO;
-    BitmapMock.Coordinate.X     = ZERO;
-    BitmapMock.Coordinate.Y     = ONE;
-    BitmapMock.Dimension.Width  = THREE_HUNDRED_NINETEEN;
-    BitmapMock.Dimension.Height = TWO_HUNDRED_THIRTY_NINE;
+    BitmapMock.Id         = ZERO;
+    BitmapMock.Coordinate = { ZERO                , ONE               };    // X, Y
+    BitmapMock.Dimension  = { THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY };    // Width, Height
     ASSERT_FALSE (DraftsmanMock.DrawBitmap (BitmapMock));
 }
 
@@ -62,53 +42,58 @@ TEST_F (DraftsmanFixture, CheckTheBitmapValidationInsideTheScreen)
     LOGW (MODULE, "CheckTheBitmapValidationInsideTheScreen");
 
     LOGI (MODULE, "Full-screen bitmap");
-    EXPECT_CALL (DraftsmanMock, validate  (_)).WillOnce (Invoke (&DraftsmanMock, &DraftsmanMock::Validate))
-                                              .WillOnce (Invoke (&DraftsmanMock, &DraftsmanMock::Validate));
-    EXPECT_CALL (DraftsmanMock, sendLines (_)).Times    (AtLeast (ZERO));
+    EXPECT_CALL (DraftsmanMock, sendLines (_)).Times (AtLeast (ONE));
 
-    BitmapMock.Id               = ZERO;
-    BitmapMock.Coordinate.X     = ZERO;
-    BitmapMock.Coordinate.Y     = ZERO;
-    BitmapMock.Dimension.Width  = THREE_HUNDRED_NINETEEN;
-    BitmapMock.Dimension.Height = TWO_HUNDRED_THIRTY_NINE;
+    BitmapMock.Id         = ZERO;
+    BitmapMock.Coordinate = { ZERO             , ZERO                 };    // X, Y
+    BitmapMock.Dimension  = { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY };    // Width, Height
     ASSERT_TRUE (DraftsmanMock.DrawBitmap (BitmapMock));
     
     LOGI (MODULE, "A bitmap on the screen");
-    BitmapMock.Coordinate.X     = FORTY;
-    BitmapMock.Coordinate.Y     = FIFTY;
-    BitmapMock.Dimension.Width  = ONE_HUNDRED;
-    BitmapMock.Dimension.Height = ONE_HUNDRED;
+    BitmapMock.Id         = ZERO;
+    BitmapMock.Coordinate = { FORTY               , FIFTY             };    // X, Y
+    BitmapMock.Dimension  = { ONE_HUNDRED         , ONE_HUNDRED       };    // Width, Height
     ASSERT_TRUE (DraftsmanMock.DrawBitmap (BitmapMock));
 }
 
-TEST_F (DraftsmanFixture, CheckTheAmountOfDataSentToTheDisplayForTheFullScreenBitmap)
+TEST_F (DraftsmanFixture, CheckTheSizeOfDataSentToTheDisplayForTheFullScreenBitmap)
 {
-    LOGW (MODULE, "CheckTheAmountOfDataSentToTheDisplay");
+    LOGW (MODULE, "CheckTheSizeOfDataSentToTheDisplay");
 
-    EXPECT_CALL (DraftsmanMock, validate  (_)).WillOnce (Return (true));
-    EXPECT_CALL (DraftsmanMock, sendLines (_)).Times    (SIXTEEN);
+    EXPECT_CALL (DraftsmanMock, sendLines (_)).Times (TWENTY_TWO);
 
-    BitmapMock.Id               = ZERO;
-    BitmapMock.Coordinate.X     = ZERO;
-    BitmapMock.Coordinate.Y     = ZERO;
-    BitmapMock.Dimension.Width  = THREE_HUNDRED_NINETEEN;
-    BitmapMock.Dimension.Height = TWO_HUNDRED_THIRTY_NINE;
+    BitmapMock.Id         = ZERO;
+    BitmapMock.Coordinate = { ZERO             , ZERO                 };    // X, Y
+    BitmapMock.Dimension  = { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY };    // Width, Height
     ASSERT_TRUE (DraftsmanMock.DrawBitmap (BitmapMock));
 }
 
-TEST_F (DraftsmanFixture, CheckTheAmountOfDataSentToTheDisplayForTheSmallBitmap)
+TEST_F (DraftsmanFixture, CheckTheSizeOfDataSentToTheDisplayForTheSmallBitmap)
 {
-    LOGW (MODULE, "CheckTheAmountOfDataSentToTheDisplayForTheSmallBitmap");
+    LOGW (MODULE, "CheckTheSizeOfDataSentToTheDisplayForTheSmallBitmap");
 
-    EXPECT_CALL (DraftsmanMock, validate  (_)).WillOnce (Return (true));
-    EXPECT_CALL (DraftsmanMock, sendLines (_)).Times    (ONE);
+    EXPECT_CALL (DraftsmanMock, sendLines (_)).Times (ONE);
 
-    BitmapMock.Id               = ZERO;
-    BitmapMock.Coordinate.X     = ZERO;
-    BitmapMock.Coordinate.Y     = ZERO;
-    BitmapMock.Dimension.Width  = FIVE;
-    BitmapMock.Dimension.Height = FIVE;
+    BitmapMock.Id         = ZERO;
+    BitmapMock.Coordinate = { ZERO, ZERO };                                 // X, Y
+    BitmapMock.Dimension  = { FIVE, FIVE };                                 // Width, Height
     ASSERT_TRUE (DraftsmanMock.DrawBitmap (BitmapMock));
+}
+
+TEST_F (DraftsmanFixture, CheckTheNumberOfChunksSentToTheDisplay)
+{
+    LOGW    (MODULE, "CheckTheNumberOfChunksSentToTheDisplay");
+    ON_CALL (DraftsmanMock, calculate (_)).WillByDefault (Invoke (&DraftsmanMock, &DraftsmanMock::Calculate));
+
+    uint8_t dataChunksLen = ONE;
+    for (const auto & calc : CalculationsMatcher)
+    {
+        Bitmap bitmap;
+        bitmap.Dimension = { calc.second.first, calc.second.second };
+
+        LOGI      (MODULE, "Bitmap number:", static_cast <char>(calc.first + '0'), ". Dimesnions, Width: ", calc.second.first, " Height: ", calc.second.second);
+        ASSERT_EQ (DraftsmanMock.Calculate (bitmap.Dimension), dataChunksLen++);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
