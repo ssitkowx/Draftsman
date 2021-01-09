@@ -27,13 +27,9 @@ class Draftsman
 
         explicit Draftsman  (const Config_t v_config) : config (v_config) { }
         void     DrawText   (std::string_view v_text, const Bitmap::Coordinates v_coordinates) { derivedType.DrawText (v_text, v_coordinates); }
-        bool     DrawBitmap (Bitmap & v_bitmap)
+        bool     DrawBitmap (Bitmap v_bitmap)
         {
-            Bitmap bitmap;
-            bitmap.Dimension  = v_bitmap.Dimension;
-            bitmap.Coordinate = v_bitmap.Coordinate;
-
-            if (validate (bitmap) == false) { return false; }
+            if (validate (v_bitmap) == false) { return false; }
 
             const uint8_t maxRects = calculate (v_bitmap.Dimension);
             if (maxRects == ONE) { sendLines (v_bitmap); }
