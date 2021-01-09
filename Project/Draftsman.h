@@ -7,7 +7,6 @@
 #include <string>
 #include "Utils.h"
 #include "Bitmap.h"
-#include "Rectangle.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
@@ -22,16 +21,19 @@ class Draftsman
     public:
         struct Config_t
         {
-            uint16_t              LinesPerTransfer;
-            Rectangle::Dimensions Dimension;
+            uint16_t           LinesPerTransfer;
+            Bitmap::Dimensions Dimension;
         };
 
         explicit Draftsman  (const Config_t v_config) : config (v_config) { }
-        void     DrawText   (std::string_view v_text, const Rectangle::Coordinates v_coordinates) { derivedType.DrawText (v_text, v_coordinates); }
+        void     DrawText   (std::string_view v_text, const Bitmap::Coordinates v_coordinates) { derivedType.DrawText (v_text, v_coordinates); }
         bool     DrawBitmap (Bitmap & v_bitmap)
         {
-            const Rectangle rect = { v_bitmap.Dimension, v_bitmap.Coordinate };
-            if (validate (rect) == false) { return false; }
+            Bitmap bitmap;
+            bitmap.Dimension  = v_bitmap.Dimension;
+            bitmap.Coordinate = v_bitmap.Coordinate;
+
+            if (validate (bitmap) == false) { return false; }
 
             const uint8_t maxRects = calculate (v_bitmap.Dimension);
             if (maxRects == ONE) { sendLines (v_bitmap); }
@@ -63,13 +65,13 @@ class Draftsman
     private:
         const Config_t config;
 
-        bool validate (const Rectangle & v_rect) const
+        bool validate (const Bitmap & v_bitmap) const
         {
-            return (((v_rect.Coordinate.X + v_rect.Dimension.Width) > config.Dimension.Width) ||
-                    ((v_rect.Coordinate.Y + v_rect.Dimension.Height) > config.Dimension.Height)) ? false : true;
+            return (((v_bitmap.Coordinate.X + v_bitmap.Dimension.Width) > config.Dimension.Width) ||
+                    ((v_bitmap.Coordinate.Y + v_bitmap.Dimension.Height) > config.Dimension.Height)) ? false : true;
         }
 
-        uint8_t calculate (const Rectangle::Dimensions & v_dimensions) const
+        uint8_t calculate (const Bitmap::Dimensions & v_dimensions) const
         {
             const double  rects         = (v_dimensions.Width * v_dimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
             const double  aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);

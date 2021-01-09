@@ -16,7 +16,7 @@ class BitmapMock : public Bitmap
     public:
         BitmapMock () = default;
         ~BitmapMock () = default;
-        MOCK_METHOD2 (Redraw, void (const uint8_t v_id, const Rectangle & v_rect));
+        MOCK_METHOD2 (Redraw, void (const uint8_t v_id, const Bitmap & v_bitmap));
 };
 
 ///////////////////////////////////////////////////////////////////////////////

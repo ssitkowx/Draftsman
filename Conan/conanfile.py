@@ -22,7 +22,6 @@ class Conan(ConanFile):
     DownloadsPath   = "C:/Users/sitko/.conan/download"
     PackagesPath    = "C:/Users/sitko/.conan/data"
     Packages        = ["Utils/1.0@ssitkowx/stable",
-                       "Rectangle/1.0@ssitkowx/stable",
                        "Bitmap/1.0@ssitkowx/stable",
                        "Logger/1.0@ssitkowx/stable",
                        "LoggerMock/1.0@ssitkowx/stable"]

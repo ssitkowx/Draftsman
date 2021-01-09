@@ -16,7 +16,7 @@
 class DraftsmanFixture : public ::testing::Test
 {
     public:
-        static constexpr char * MODULE       = (char *)"DraftsmanFixture";
+        static constexpr char *       MODULE = (char *)"DraftsmanFixture";
         const DraftsmanMock::Config_t Config = { FIFTEEN, { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY } };    //LinesPerTransfer, Dimensions { Width, Height }
         BitmapMock                    BitmapMock;
         DraftsmanMock                 DraftsmanMock;

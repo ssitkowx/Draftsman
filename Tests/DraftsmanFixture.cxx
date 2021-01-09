@@ -41,7 +41,7 @@ TEST_F (DraftsmanFixture, CheckTheBitmapValidationInsideTheScreen)
 {
     LOGW (MODULE, "CheckTheBitmapValidationInsideTheScreen");
 
-    LOGI (MODULE, "Full-screen bitmap");
+    LOGI        (MODULE, "Full-screen bitmap");
     EXPECT_CALL (DraftsmanMock, sendLines (_)).Times (AtLeast (ONE));
 
     BitmapMock.Id         = ZERO;
@@ -83,6 +83,7 @@ TEST_F (DraftsmanFixture, CheckTheSizeOfDataSentToTheDisplayForTheSmallBitmap)
 TEST_F (DraftsmanFixture, CheckTheNumberOfChunksSentToTheDisplay)
 {
     LOGW    (MODULE, "CheckTheNumberOfChunksSentToTheDisplay");
+
     ON_CALL (DraftsmanMock, calculate (_)).WillByDefault (Invoke (&DraftsmanMock, &DraftsmanMock::Calculate));
 
     uint8_t dataChunksLen = ONE;
@@ -90,8 +91,6 @@ TEST_F (DraftsmanFixture, CheckTheNumberOfChunksSentToTheDisplay)
     {
         Bitmap bitmap;
         bitmap.Dimension = { calc.second.first, calc.second.second };
-
-        LOGI      (MODULE, "Bitmap number:", static_cast <char>(calc.first + '0'), ". Dimesnions, Width: ", calc.second.first, " Height: ", calc.second.second);
         ASSERT_EQ (DraftsmanMock.Calculate (bitmap.Dimension), dataChunksLen++);
     }
 }
