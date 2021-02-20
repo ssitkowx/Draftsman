@@ -39,15 +39,13 @@ class Draftsman
                 const uint16_t bitmapHeight = v_bitmap.Dimension.Height;
                 for (uint8_t rectNum = ONE; rectNum <= maxRects; rectNum++)
                 {
-                    if (rectNum == maxRects) { height = bitmapHeight - (rectNum - ONE) * height; }
+                    v_bitmap.Coordinate.Y     = v_bitmap.Coordinate.Y + height;
+                    v_bitmap.Data             = &v_bitmap.Data [v_bitmap.Dimension.Width * height];
+
+                    if (rectNum == maxRects) { height = bitmapHeight - (maxRects - ONE) * height; }
                     else                     { height = config.LinesPerTransfer * config.Dimension.Width / v_bitmap.Dimension.Width; }
 
-                    auto enableChunkMovement    = [&]() -> bool { return (rectNum == ONE) ? false : true; };
-                    bool isChunkMovementEnabled = enableChunkMovement ();
-                    v_bitmap.Dimension.Height   = height;
-                    v_bitmap.Coordinate.Y       = v_bitmap.Coordinate.Y + isChunkMovementEnabled * height;
-                    v_bitmap.Data               = &v_bitmap.Data [isChunkMovementEnabled * v_bitmap.Dimension.Width * height];
-
+                    v_bitmap.Dimension.Height = height;
                     sendLines (v_bitmap);
                 }
             }
