@@ -12,11 +12,11 @@
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-class DraftsmanMock final : public Draftsman <DraftsmanMock>
+class DraftsmanHw final : public Draftsman <DraftsmanHw>
 {
     public:
-        DraftsmanMock (Draftsman <DraftsmanMock>::Config_t v_config) : Draftsman <DraftsmanMock> (v_config) { }
-        ~DraftsmanMock () = default;
+        DraftsmanHw (Draftsman <DraftsmanHw>::Config_t v_config) : Draftsman <DraftsmanHw> (v_config) { }
+        ~DraftsmanHw () = default;
 
         MOCK_METHOD2       (DrawText , void    (std::string_view v_text, const Bitmap::Coordinates v_coordinates));
         MOCK_METHOD1       (sendLines, void    (const Bitmap & v_rect));
@@ -24,7 +24,7 @@ class DraftsmanMock final : public Draftsman <DraftsmanMock>
 
         uint8_t Calculate (const Bitmap::Dimensions & v_dimensions) const
         {
-            return Draftsman <DraftsmanMock>::calculate (v_dimensions);
+            return Draftsman <DraftsmanHw>::calculate (v_dimensions);
         }
 };
 

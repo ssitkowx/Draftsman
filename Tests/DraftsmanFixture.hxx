@@ -7,7 +7,7 @@
 #include <map>
 #include <utility>
 #include "Draftsman.h"
-#include "DraftsmanMock.hxx"
+#include "DraftsmanHw.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
@@ -16,14 +16,14 @@
 class DraftsmanFixture : public ::testing::Test
 {
     public:
-        static constexpr char *       MODULE = (char *)"DraftsmanFixture";
-        const DraftsmanMock::Config_t Config = { FIFTEEN, { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY } };    //LinesPerTransfer, Dimensions { Width, Height }
-        BitmapMock                    BitmapMock;
-        DraftsmanMock                 DraftsmanMock;
+        static constexpr char *     MODULE = (char *)"DraftsmanFixture";
+        const DraftsmanHw::Config_t Config = { FIFTEEN, { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY } };    //LinesPerTransfer, Dimensions { Width, Height }
+        BitmapHw                    BitmapHw;
+        DraftsmanHw                 DraftsmanHw;
 
         const std::map <uint8_t, std::pair <uint16_t, uint16_t>> CalculationsMatcher;
 
-        DraftsmanFixture () : DraftsmanMock (Config),
+        DraftsmanFixture () : DraftsmanHw (Config),
                               CalculationsMatcher { { ONE       , std::make_pair <uint16_t, uint16_t> (TWO_HUNDRED_FORTY, FIFTEEN                 ), },
                                                     { TWO       , std::make_pair <uint16_t, uint16_t> (TWO_HUNDRED_FORTY, THIRTY                  ), },
                                                     { THREE     , std::make_pair <uint16_t, uint16_t> (TWO_HUNDRED_FORTY, FORTY_FIVE              ), },
