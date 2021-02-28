@@ -12,7 +12,7 @@
 /////////////////////////// CLASSES/STRUCTURES ////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-class DraftsmanHw : public Draftsman <DraftsmanHw>
+class DraftsmanHw final : public Draftsman <DraftsmanHw>
 {
     public:
         DraftsmanHw (Draftsman <DraftsmanHw>::Config_t v_config) : Draftsman <DraftsmanHw> (v_config) { }
