@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "Utils.h"
-#include "BitmapHw.h"
+#include "Bitmap.h"
 #include "LoggerHw.h"
 #include "gmock/gmock.h"
 #include "DraftsmanFixture.hxx"
@@ -25,16 +25,16 @@ TEST_F (DraftsmanFixture, CheckTheBitmapValidationOutsideTheScreen)
     LOGW (MODULE, "CheckTheBitmapValidationOutsideTheScreen");
 
     LOGI (MODULE, "The bitmap will exceed the width of the screen");
-    BitmapHw.Id         = ZERO;
-    BitmapHw.Coordinate = { ONE                 , ZERO              };    // X, Y
-    BitmapHw.Dimension  = { THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY };    // Width, Height
-    ASSERT_FALSE (DraftsmanHw.DrawBitmap (BitmapHw));
+    Bitmap.Id         = ZERO;
+    Bitmap.Coordinate = { ONE                 , ZERO              };    // X, Y
+    Bitmap.Dimension  = { THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY };    // Width, Height
+    ASSERT_FALSE (DraftsmanHw.DrawBitmap (Bitmap));
 
     LOGI (MODULE, "The bitmap will exceed the height of the screen");
-    BitmapHw.Id         = ZERO;
-    BitmapHw.Coordinate = { ZERO                , ONE               };    // X, Y
-    BitmapHw.Dimension  = { THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY };    // Width, Height
-    ASSERT_FALSE (DraftsmanHw.DrawBitmap (BitmapHw));
+    Bitmap.Id         = ZERO;
+    Bitmap.Coordinate = { ZERO                , ONE               };    // X, Y
+    Bitmap.Dimension  = { THREE_HUNDRED_TWENTY, TWO_HUNDRED_FORTY };    // Width, Height
+    ASSERT_FALSE (DraftsmanHw.DrawBitmap (Bitmap));
 }
 
 TEST_F (DraftsmanFixture, CheckTheBitmapValidationInsideTheScreen)
@@ -44,16 +44,16 @@ TEST_F (DraftsmanFixture, CheckTheBitmapValidationInsideTheScreen)
     LOGI        (MODULE, "Full-screen bitmap");
     EXPECT_CALL (DraftsmanHw, sendLines (_)).Times (AtLeast (ONE));
 
-    BitmapHw.Id         = ZERO;
-    BitmapHw.Coordinate = { ZERO             , ZERO                 };    // X, Y
-    BitmapHw.Dimension  = { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY };    // Width, Height
-    ASSERT_TRUE (DraftsmanHw.DrawBitmap (BitmapHw));
+    Bitmap.Id         = ZERO;
+    Bitmap.Coordinate = { ZERO             , ZERO                 };    // X, Y
+    Bitmap.Dimension  = { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY };    // Width, Height
+    ASSERT_TRUE (DraftsmanHw.DrawBitmap (Bitmap));
     
     LOGI (MODULE, "A bitmap on the screen");
-    BitmapHw.Id         = ZERO;
-    BitmapHw.Coordinate = { FORTY               , FIFTY             };    // X, Y
-    BitmapHw.Dimension  = { ONE_HUNDRED         , ONE_HUNDRED       };    // Width, Height
-    ASSERT_TRUE (DraftsmanHw.DrawBitmap (BitmapHw));
+    Bitmap.Id         = ZERO;
+    Bitmap.Coordinate = { FORTY               , FIFTY             };    // X, Y
+    Bitmap.Dimension  = { ONE_HUNDRED         , ONE_HUNDRED       };    // Width, Height
+    ASSERT_TRUE (DraftsmanHw.DrawBitmap (Bitmap));
 }
 
 TEST_F (DraftsmanFixture, CheckTheSizeOfDataSentToTheDisplayForTheFullScreenBitmap)
@@ -62,10 +62,10 @@ TEST_F (DraftsmanFixture, CheckTheSizeOfDataSentToTheDisplayForTheFullScreenBitm
 
     EXPECT_CALL (DraftsmanHw, sendLines (_)).Times (TWENTY_TWO);
 
-    BitmapHw.Id         = ZERO;
-    BitmapHw.Coordinate = { ZERO             , ZERO                 };    // X, Y
-    BitmapHw.Dimension  = { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY };    // Width, Height
-    ASSERT_TRUE (DraftsmanHw.DrawBitmap (BitmapHw));
+    Bitmap.Id         = ZERO;
+    Bitmap.Coordinate = { ZERO             , ZERO                 };    // X, Y
+    Bitmap.Dimension  = { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY };    // Width, Height
+    ASSERT_TRUE (DraftsmanHw.DrawBitmap (Bitmap));
 }
 
 TEST_F (DraftsmanFixture, CheckTheSizeOfDataSentToTheDisplayForTheSmallBitmap)
@@ -74,10 +74,10 @@ TEST_F (DraftsmanFixture, CheckTheSizeOfDataSentToTheDisplayForTheSmallBitmap)
 
     EXPECT_CALL (DraftsmanHw, sendLines (_)).Times (ONE);
 
-    BitmapHw.Id         = ZERO;
-    BitmapHw.Coordinate = { ZERO, ZERO };                                 // X, Y
-    BitmapHw.Dimension  = { FIVE, FIVE };                                 // Width, Height
-    ASSERT_TRUE (DraftsmanHw.DrawBitmap (BitmapHw));
+    Bitmap.Id         = ZERO;
+    Bitmap.Coordinate = { ZERO, ZERO };                                 // X, Y
+    Bitmap.Dimension  = { FIVE, FIVE };                                 // Width, Height
+    ASSERT_TRUE (DraftsmanHw.DrawBitmap (Bitmap));
 }
 
 TEST_F (DraftsmanFixture, CheckTheNumberOfChunksSentToTheDisplay)
@@ -89,7 +89,7 @@ TEST_F (DraftsmanFixture, CheckTheNumberOfChunksSentToTheDisplay)
     uint8_t dataChunksLen = ONE;
     for (const auto & calc : CalculationsMatcher)
     {
-        Bitmap bitmap;
+        class Bitmap bitmap;
         bitmap.Dimension = { calc.second.first, calc.second.second };
         ASSERT_EQ (DraftsmanHw.Calculate (bitmap.Dimension), dataChunksLen++);
     }

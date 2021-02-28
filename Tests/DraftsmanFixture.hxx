@@ -18,7 +18,7 @@ class DraftsmanFixture : public ::testing::Test
     public:
         static constexpr char *     MODULE = (char *)"DraftsmanFixture";
         const DraftsmanHw::Config_t Config = { FIFTEEN, { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY } };    //LinesPerTransfer, Dimensions { Width, Height }
-        BitmapHw                    BitmapHw;
+        Bitmap                      Bitmap;
         DraftsmanHw                 DraftsmanHw;
 
         const std::map <uint8_t, std::pair <uint16_t, uint16_t>> CalculationsMatcher;
