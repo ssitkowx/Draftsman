@@ -4,7 +4,10 @@
 //////////////////////////////// INCLUDES /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+#include "Font.h"
 #include "Utils.h"
+#include "SpiHw.h"
+#include "Bitmap.h"
 #include "Draftsman.h"
 #include "gmock/gmock.h"
 
@@ -14,8 +17,10 @@
 
 class DraftsmanHw final : public Draftsman <DraftsmanHw>
 {
+    friend Draftsman<DraftsmanHw>;
+
     public:
-        DraftsmanHw (Draftsman <DraftsmanHw>::Config_t v_config) : Draftsman <DraftsmanHw> (v_config) { }
+        explicit DraftsmanHw (const Config_t v_config, SpiHw & v_spi, Font & v_font) : Draftsman<DraftsmanHw>(v_config) { }
         ~DraftsmanHw () = default;
 
         MOCK_METHOD2       (DrawText , void    (std::string_view v_text, const Bitmap::Coordinates v_coordinates));
