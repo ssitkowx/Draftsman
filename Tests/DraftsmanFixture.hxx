@@ -18,14 +18,14 @@ class DraftsmanFixture : public ::testing::Test
     public:
         static constexpr char *     MODULE = (char *)"DraftsmanFixture";
         const DraftsmanHw::Config_t Config = { FIFTEEN, { TWO_HUNDRED_FORTY, THREE_HUNDRED_TWENTY } };    //LinesPerTransfer, Dimensions { Width, Height }
-        Font                        Font;
-        SpiHw                       SpiHw;
-        Bitmap                      Bitmap;
-        DraftsmanHw                 DraftsmanHw;
+        class Font                  Font;
+        class SpiHw                 SpiHw;
+        class Bitmap                Bitmap;
+        class DraftsmanHw           oDraftsmanHw;
 
         const std::map <uint8_t, std::pair <uint16_t, uint16_t>> CalculationsMatcher;
 
-        DraftsmanFixture () : DraftsmanHw (Config, SpiHw, Font),
+        DraftsmanFixture () : oDraftsmanHw (Config, SpiHw, Font),
                               CalculationsMatcher { { ONE       , std::make_pair <uint16_t, uint16_t> (TWO_HUNDRED_FORTY, FIFTEEN                 ), },
                                                     { TWO       , std::make_pair <uint16_t, uint16_t> (TWO_HUNDRED_FORTY, THIRTY                  ), },
                                                     { THREE     , std::make_pair <uint16_t, uint16_t> (TWO_HUNDRED_FORTY, FORTY_FIVE              ), },
