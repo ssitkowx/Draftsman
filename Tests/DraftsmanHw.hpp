@@ -20,16 +20,16 @@ class DraftsmanHw final : public Draftsman <DraftsmanHw>
     friend Draftsman<DraftsmanHw>;
 
     public:
-        explicit DraftsmanHw (const Config_t v_config, SpiHw & v_spi, Font & v_font) : Draftsman<DraftsmanHw>(v_config) { }
+        explicit DraftsmanHw (const Config_t vConfig, SpiHw & vSpi, Font & vFont) : Draftsman<DraftsmanHw>(vConfig) { }
         ~DraftsmanHw () = default;
 
-        MOCK_METHOD2       (DrawText , void    (std::string_view v_text, const Bitmap::Coordinates v_coordinates));
-        MOCK_METHOD1       (sendLines, void    (const Bitmap & v_rect));
-        MOCK_CONST_METHOD1 (calculate, uint8_t (const Bitmap::Dimensions & v_dimensions));
+        MOCK_METHOD2       (DrawText , void    (std::string_view vText, const Bitmap::Coordinates vCoordinates));
+        MOCK_METHOD1       (sendLines, void    (const Bitmap & vRect));
+        MOCK_CONST_METHOD1 (calculate, uint8_t (const Bitmap::Dimensions & vDimensions));
 
-        uint8_t Calculate (const Bitmap::Dimensions & v_dimensions) const
+        uint8_t Calculate (const Bitmap::Dimensions & vDimensions) const
         {
-            return Draftsman <DraftsmanHw>::calculate (v_dimensions);
+            return Draftsman <DraftsmanHw>::calculate (vDimensions);
         }
 };
 

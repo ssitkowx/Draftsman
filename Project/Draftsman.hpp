@@ -25,28 +25,28 @@ class Draftsman
             Bitmap::Dimensions Dimension;
         };
 
-        explicit Draftsman  (const Config_t v_config) : config (v_config) { }
-        void     DrawText   (std::string_view v_text, const Bitmap::Coordinates v_coordinates) { derivedType.DrawText (v_text, v_coordinates); }
-        bool     DrawBitmap (Bitmap v_bitmap)
+        explicit Draftsman  (const Config_t vConfig) : config (vConfig) { }
+        void     DrawText   (std::string_view vText, const Bitmap::Coordinates vCoordinates) { derivedType.DrawText (vText, vCoordinates); }
+        bool     DrawBitmap (Bitmap vBitmap)
         {
-            if (validate (v_bitmap) == false) { return false; }
+            if (validate (vBitmap) == false) { return false; }
 
-            const uint8_t maxRects = calculate (v_bitmap.Dimension);
-            if (maxRects == ONE) { sendLines (v_bitmap); }
+            const uint8_t maxRects = calculate (vBitmap.Dimension);
+            if (maxRects == ONE) { sendLines (vBitmap); }
             else
             {
-                uint16_t height             = ZERO;
-                const uint16_t bitmapHeight = v_bitmap.Dimension.Height;
+                uint16_t       height       = ZERO;
+                const uint16_t bitmapHeight = vBitmap.Dimension.Height;
                 for (uint8_t rectNum = ONE; rectNum <= maxRects; rectNum++)
                 {
-                    v_bitmap.Coordinate.Y     = v_bitmap.Coordinate.Y + height;
-                    v_bitmap.Data             = &v_bitmap.Data [v_bitmap.Dimension.Width * height];
+                    vBitmap.Coordinate.Y = vBitmap.Coordinate.Y + height;
+                    vBitmap.Data         = &vBitmap.Data [vBitmap.Dimension.Width * height];
 
                     if (rectNum == maxRects) { height = bitmapHeight - (maxRects - ONE) * height; }
-                    else                     { height = config.LinesPerTransfer * config.Dimension.Width / v_bitmap.Dimension.Width; }
+                    else                     { height = config.LinesPerTransfer * config.Dimension.Width / vBitmap.Dimension.Width; }
 
-                    v_bitmap.Dimension.Height = height;
-                    sendLines (v_bitmap);
+                    vBitmap.Dimension.Height = height;
+                    sendLines (vBitmap);
                 }
             }
 
@@ -54,7 +54,7 @@ class Draftsman
         };
 
     protected:
-        void sendLines (const Bitmap & v_rect) { derivedType.sendLines (v_rect); }
+        void sendLines (const Bitmap & vRect) { derivedType.sendLines (vRect); }
 
     private:
         const Config_t config;
@@ -65,10 +65,10 @@ class Draftsman
                     ((v_bitmap.Coordinate.Y + v_bitmap.Dimension.Height) > config.Dimension.Height)) ? false : true;
         }
 
-        uint8_t calculate (const Bitmap::Dimensions & v_dimensions) const
+        uint8_t calculate (const Bitmap::Dimensions & vDimensions) const
         {
-            const double  rects         = (v_dimensions.Width * v_dimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
-            const double  aditionalRect = (v_dimensions.Width * v_dimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);
+            const double  rects         = (vDimensions.Width * vDimensions.Height) / (config.Dimension.Width * config.LinesPerTransfer);
+            const double  aditionalRect = (vDimensions.Width * vDimensions.Height) % (config.Dimension.Width * config.LinesPerTransfer);
             uint8_t maxRects            = static_cast <uint8_t> (rects);
             return (aditionalRect > ZERO) ? ++maxRects : maxRects;
         }
